@@ -1,0 +1,30 @@
+h1{
+	text-align:center;
+}
+
+#center-box{
+	border-radius:1em;
+	padding:1em;
+	background-color:#ccc;
+	width:90%;
+	margin:0 auto;
+}
+
+.inline-box{
+	display:inline-block;
+	text-align:left;
+	vertical-align:top;
+}
+
+.inline-box input {
+	width:6em;
+}
+
+#pass-rep-sp{
+	display:none;
+}
+
+#user-forms{
+	text-align:center;
+	margin-bottom:1em;
+}
