@@ -124,4 +124,16 @@
 		}
 		return true;
 	}
+	
+	function delete_attribute($uid, $attrib){
+		global $db;
+		$update_attributes=$db->prepare("DELETE FROM account_attributes WHERE attribute_account = :uid AND attribute_attribute = :attrib AND attribute_modifiable");
+		return $update_attributes->execute(array(":uid"=>$uid, ":attrib"=>$attrib));
+	}
+	
+	function add_attribute($uid, $attribute, $value){
+		global $db;
+		$insert_attribute=$db->prepare("INSERT INTO account_attributes (attribute_account, attribute_attribute, attribute_value) VALUES (:uid, :attrib, :value)");
+		return $insert_attribute->execute(array(":uid"=>$uid, ":attrib"=>$attribute, ":value"=>htmlentities($value)));
+	}
 ?>

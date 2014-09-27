@@ -7,7 +7,6 @@
 		logoff();
 	}
 	
-	//check authentication if set
 	if(isset($_POST["login"])){
 		login($_POST["username"], $_POST["pass"], true);
 	}
@@ -35,6 +34,19 @@
 		}
 	}
 	
+	if(isset($_GET["del-attribute"])&&isset($_GET["id"])){
+		if(delete_attribute($_SESSION["account"], intval($_GET["id"]))){
+			//update attribute data
+			$_SESSION["attributes"]=get_attributes($_SESSION["account"]);
+		}
+	}
+	
+	if(isset($_POST["add-attribute"])){
+		if(add_attribute($_SESSION["account"], intval($_POST["attribute"]), $_POST["attribute_value"])){
+			//update attribute data
+			$_SESSION["attributes"]=get_attributes($_SESSION["account"]);
+		}
+	}
 	
 ?>
 
@@ -82,7 +94,7 @@
 					<h3>Manage your relationship to the SYSTEM</h3>
 					<div class="inline-box">
 						<strong>Change my Password</strong>
-						<form action="" method="POST">
+						<form action="?" method="POST">
 							<input type="password" id="pw-old" name="pw-old" />
 							<label for="pw-old">Current Password</label> 
 							<br/>
@@ -112,7 +124,7 @@
 					
 					<div class="inline-box">
 						<strong>Delete my account</strong>
-						<form action="" method="POST">
+						<form action="?" method="POST">
 							<input type="password" id="pass-del" name="pass" />
 							<label for="pass-del">Password</label> 
 							<br/>
@@ -130,40 +142,39 @@
 				<div class="section" id="account-attributes">
 					<h2><a name="attributes">Account attributes</a></h2>
 					<h3>What the SYSTEM knows about you</h3>
-					<table>
-						<tr>
-							<th>Attribute</th>
-							<th>Value</th>
-							<th>Options</th>
-						</tr>
-						<?php
-							foreach($_SESSION["attributes"]["active"] as $attr){
-								?>
-									<tr>
-										<td><?php print($attr["attribute_displayname"]); ?></td>
-										<td><?php print($attr["attribute_value"]); ?></td>
-										<td><?php if($attr["attribute_modifiable"]){print("[Del]");} ?></td>
-									</tr>
-								<?php
-							}
-						?>
-						<tr>
-							<td>
-								<select name="attribute">
-									<?php
-										foreach($_SESSION["attributes"]["unused"] as $attr){
-											print('<option value="'.$attr["attribute_id"].'">'.$attr["attribute_displayname"].'</option>');
-										}
+					<form action="?" method="POST">
+						<table>
+							<tr>
+								<th>Attribute</th>
+								<th>Value</th>
+								<th>Options</th>
+							</tr>
+							<?php
+								foreach($_SESSION["attributes"]["active"] as $attr){
 									?>
-								</select>
-							</td>
-							<td><input type="text" name="attribute_value" /></td>
-							<td>[Add]</td>
-						</tr>
-					</table>
-					<?php
-						//echo json_encode($_SESSION["attributes"]);
-					?>
+										<tr>
+											<td><?php print($attr["attribute_displayname"]); ?></td>
+											<td><?php print($attr["attribute_value"]); ?></td>
+											<td><?php if($attr["attribute_modifiable"]){print('<a href="?del-attribute&id='.$attr["attribute_id"].'">[Del]</a>');} ?></td>
+										</tr>
+									<?php
+								}
+							?>
+							<tr>
+								<td>
+									<select name="attribute">
+										<?php
+											foreach($_SESSION["attributes"]["unused"] as $attr){
+												print('<option value="'.$attr["attribute_id"].'">'.$attr["attribute_displayname"].'</option>');
+											}
+										?>
+									</select>
+								</td>
+								<td><input type="text" name="attribute_value" /></td>
+								<td><input type="submit" value="Add" name="add-attribute" /></td>
+							</tr>
+						</table>
+					</form>
 				</div>
 				<div class="section" id="account-tokens">
 					<h2><a name="tokens">Active tokens</a></h2>
