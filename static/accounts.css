@@ -2,6 +2,19 @@ h1{
 	text-align:center;
 }
 
+h2,h3{
+	margin:0;
+	padding:0;
+	color:#333;
+}
+
+h3{
+	font-size:90%;
+	font-style:italic;
+	font-weight:normal;
+	color:#666;
+}
+
 #center-box{
 	border-radius:1em;
 	background-color:#ccc;
@@ -13,10 +26,20 @@ h1{
 	padding:1em;
 }
 
+#center-box  table {
+	width:100%;
+	text-align:left;
+}
+
+#center-box table th {
+	border-bottom:1px solid #d0d0d0;
+}
+
 .inline-box{
 	display:inline-block;
 	text-align:left;
 	vertical-align:top;
+	padding:1em;
 }
 
 .inline-box input {

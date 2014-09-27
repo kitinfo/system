@@ -36,10 +36,22 @@
 		exit("Failed to insert");
 	}
 	
+	$insert_statement=$db->prepare("INSERT INTO account_attributes (attribute_account, attribute_attribute, attribute_value, attribute_modifiable) VALUES (:uid, 2, :timestamp, 0)");
+	if(!$insert_statement->execute(
+		array(
+			":uid" => $db->lastInsertId(),
+			":timestamp" => time()
+		)
+	)){
+		var_dump($db->errorInfo());
+		exit("Failed to insert");
+	}
+	
+	
+	require_once("../account_funcs.php");
 	session_start();
-	$_SESSION["account"]=$db->lastInsertId();
-	$_SESSION["username"]=$username;
-	$_SESSION["remote"]=$_SERVER["REMOTE_ADDR"];
+	
+	login($username, $_POST["pass"], true);
 	header("Location: ../manage/");
 	die();
 ?>

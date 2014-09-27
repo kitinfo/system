@@ -9,12 +9,33 @@
 	
 	//check authentication if set
 	if(isset($_POST["login"])){
-		login();
+		login($_POST["username"], $_POST["pass"], true);
 	}
 	
 	if(!isset($_SESSION["remote"])||$_SESSION["remote"]!=$_SERVER["REMOTE_ADDR"]){
-		logoff("?stolen");
+		logoff("?session-stolen");
 	}
+	
+	if(isset($_POST["terminate"])){
+		if(verify_password($_SESSION["account"], $_POST["pass"])){
+			if(delete_account($_SESSION["account"])){
+				logoff();
+			}
+		}
+	}
+	
+	if(isset($_POST["change-password"])){
+		$_POST["change-password"]=false;
+		if(verify_password($_SESSION["account"], $_POST["pw-old"])){
+			if($_POST["pw-new"]==$_POST["pw-rep"]){
+				if(update_password($_SESSION["account"], $_POST["pw-new"])){
+					$_POST["change-password"]=true;
+				}
+			}
+		}
+	}
+	
+	
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
@@ -58,19 +79,135 @@
 			<div id="section-wrapper">
 				<div class="section" id="account-settings">
 					<h2><a name="account">Account settings</a></h2>
-					Password change, account deletion, etc
+					<h3>Manage your relationship to the SYSTEM</h3>
+					<div class="inline-box">
+						<strong>Change my Password</strong>
+						<form action="" method="POST">
+							<input type="password" id="pw-old" name="pw-old" />
+							<label for="pw-old">Current Password</label> 
+							<br/>
+							<input type="password" id="pw-new" name="pw-new" />
+							<label for="pw-new">New Password</label>
+							<br/>
+							<input type="password" id="pass-rep" name="pw-rep" />
+							<label for="pass-rep">Repeat</label> 
+							<br/>
+							<input type="submit" value="Continue" name="change-password"/>
+							<?php
+								if(isset($_POST["change-password"])){
+									if($_POST["change-password"]){
+										?>
+											<em>OK</em>
+										<?php
+									}
+									else{
+										?>
+											<em>Failed</em>
+										<?php
+									}
+								}
+							?>
+						</form>
+					</div>
+					
+					<div class="inline-box">
+						<strong>Delete my account</strong>
+						<form action="" method="POST">
+							<input type="password" id="pass-del" name="pass" />
+							<label for="pass-del">Password</label> 
+							<br/>
+							<input type="submit" value="Terminate" name="terminate"/>
+							<?php
+								if(isset($_POST["terminate"])){
+									?>
+										<em>Incorrect password.</em>
+									<?php
+								}
+							?>
+						</form>
+					</div>
 				</div>
 				<div class="section" id="account-attributes">
 					<h2><a name="attributes">Account attributes</a></h2>
-					What the system knows about you
+					<h3>What the SYSTEM knows about you</h3>
+					<table>
+						<tr>
+							<th>Attribute</th>
+							<th>Value</th>
+							<th>Options</th>
+						</tr>
+						<?php
+							foreach($_SESSION["attributes"]["active"] as $attr){
+								?>
+									<tr>
+										<td><?php print($attr["attribute_displayname"]); ?></td>
+										<td><?php print($attr["attribute_value"]); ?></td>
+										<td><?php if($attr["attribute_modifiable"]){print("[Del]");} ?></td>
+									</tr>
+								<?php
+							}
+						?>
+						<tr>
+							<td>
+								<select name="attribute">
+									<?php
+										foreach($_SESSION["attributes"]["unused"] as $attr){
+											print('<option value="'.$attr["attribute_id"].'">'.$attr["attribute_displayname"].'</option>');
+										}
+									?>
+								</select>
+							</td>
+							<td><input type="text" name="attribute_value" /></td>
+							<td>[Add]</td>
+						</tr>
+					</table>
+					<?php
+						//echo json_encode($_SESSION["attributes"]);
+					?>
 				</div>
 				<div class="section" id="account-tokens">
 					<h2><a name="tokens">Active tokens</a></h2>
-					Active credentials on connected systems
+					<h3>Where the SYSTEM has authenticated you</h3>
+					<table>
+						<tr>
+							<th>Token</th>
+							<th>Service</th>
+							<th>Issued</th>
+							<th>Expiry</th>
+							<th>Options</th>
+						</tr>
+						<tr>
+							<td>1231231231</td>
+							<td>lists</td>
+							<td>1000</td>
+							<td>1234</td>
+							<td>[Del]</td>
+						</tr>
+					</table>
 				</div>
 				<div class="section" id="account-endpoints">
 					<h2><a name="endpoints">My endpoints</a></h2>
-					Roll your own service
+					<h3>Roll your own service connected to the SYSTEM</h3>
+					<table>
+						<tr>
+							<th>Handle</th>
+							<th>Endpoint</th>
+							<th>Protocol</th>
+							<th>Options</th>
+						</tr>
+						<tr>
+							<td>lists</td>
+							<td>http://lists.kitinfo.de/accounts_endpoint.php</td>
+							<td>1</td>
+							<td>[Del]</td>
+						</tr>
+						<tr>
+							<td><input type="text" /></td>
+							<td><input type="text" /></td>
+							<td>-</td>
+							<td>[Create]</td>
+						</tr>
+					</table>
 				</div>
 			</div>
 			<div id="foot">
