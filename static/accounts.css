@@ -4,10 +4,13 @@ h1{
 
 #center-box{
 	border-radius:1em;
-	padding:1em;
 	background-color:#ccc;
 	width:90%;
 	margin:0 auto;
+}
+
+#center-box.padded{
+	padding:1em;
 }
 
 .inline-box{
@@ -27,4 +30,32 @@ h1{
 #user-forms{
 	text-align:center;
 	margin-bottom:1em;
+}
+
+#headmenu{
+	text-align:center;
+	padding-top:1em;
+	padding-bottom:1em;
+}
+
+#headmenu .item{
+	text-decoration:none;
+	background-color:#eee;
+	border-radius:0.2em;
+	display:inline-block;
+	padding:0.5em;
+}
+
+#headmenu .item:hover{
+	background-color:#fefefe;
+}
+
+.section{
+	background-color:#ddd;
+	padding:1em;
+}
+
+#foot{
+	padding:1em;
+	font-size:90%;
 }
