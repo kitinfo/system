@@ -8,7 +8,7 @@
 	if(!isset($_POST["username"])||empty($_POST["username"])){
 		exit("Username missing or empty");
 	}
-	$username=htmlentities($_POST["username"]);
+	$username=strtolower(htmlentities($_POST["username"]));
 	
 	if(!isset($_POST["pass"])||empty($_POST["pass"])){
 		exit("Password missing or empty");
