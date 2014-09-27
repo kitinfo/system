@@ -142,10 +142,7 @@
 	function delete_account($uid){
 		global $db;
 		$delete_user=$db->prepare("DELETE FROM accounts WHERE account_id=:uid");
-		if(!$delete_user->execute(array(":uid"=>$uid))){
-			return false;
-		}
-		return true;
+		return $delete_user->execute(array(":uid"=>$uid));
 	}
 	
 	function update_password($uid, $pass){
@@ -158,10 +155,7 @@
 		$user_data=$user_data->fetch(PDO::FETCH_ASSOC);
 		
 		$pass=hash("sha256", $user_data["account_salt"].$pass);
-		if(!$update_pass->execute(array(":pass"=>$pass, ":uid"=>$uid))){
-			return false;
-		}
-		return true;
+		return $update_pass->execute(array(":pass"=>$pass, ":uid"=>$uid));
 	}
 	
 	function delete_attribute($uid, $attrib){
