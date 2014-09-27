@@ -255,7 +255,7 @@
 									?>
 										<tr>
 											<td><?php print($remote["remote_handle"]); ?></td>
-											<td><?php print($remote["remote_endpoint"]); ?></td>
+											<td><?php print(htmlentities($remote["remote_endpoint"])); ?></td>
 											<td><?php print($remote["remote_protocol_version"]); ?></td>
 											<td><a href="?del-remote&id=<?php print($remote["remote_id"]); ?>">[Del]</a></td>
 										</tr>

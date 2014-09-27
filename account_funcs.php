@@ -201,7 +201,13 @@
 		$user=hash("sha256", mt_rand());
 		$pass=hash("sha256", mt_rand());
 		
-		if(!$remote_data->execute(array(":handle"=>$handle, ":endpoint"=>$endpoint, ":user"=>$user, ":pass"=>$pass, ":uid"=>$uid))){
+		if(!$remote_data->execute(array(
+			":handle"=>htmlentities($handle), 
+			":endpoint"=>$endpoint, 
+			":user"=>$user, 
+			":pass"=>$pass, 
+			":uid"=>$uid
+		))){
 			return false;
 		}
 		
