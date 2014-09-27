@@ -48,6 +48,25 @@
 		}
 	}
 	
+	if(isset($_GET["rev-token"])&&isset($_GET["id"])){
+		if(revoke_token($_SESSION["account"], intval($_GET["id"]))){
+			$_SESSION["tokens"]=get_tokens($_SESSION["account"]);
+		}
+	}
+	
+	if(isset($_GET["del-remote"])&&isset($_GET["id"])){
+		if(delete_remote($_SESSION["account"], intval($_GET["id"]))){
+			$_SESSION["remotes"]=get_remotes($_SESSION["account"]);
+		}
+	}
+	
+	if(isset($_POST["add-remote"])){
+		$_POST["add-remote"]=add_remote($_SESSION["account"], $_POST["remote_handle"], $_POST["remote_endpoint"]);
+		if($_POST["add-remote"]!==false){
+			$_SESSION["remotes"]=get_remotes($_SESSION["account"]);
+		}
+	}
+	
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
@@ -184,41 +203,73 @@
 							<th>Token</th>
 							<th>Service</th>
 							<th>Issued</th>
-							<th>Expiry</th>
+							<th>Lifetime</th>
 							<th>Options</th>
 						</tr>
-						<tr>
-							<td>1231231231</td>
-							<td>lists</td>
-							<td>1000</td>
-							<td>1234</td>
-							<td>[Del]</td>
-						</tr>
+						<?php
+							foreach($_SESSION["tokens"] as $token){
+								?>
+									<tr>
+										<td><?php print($token["token_token"]); ?></td>
+										<td><?php print($token["remote_handle"]); ?></td>
+										<td><?php print($token["token_issued"]); ?></td>
+										<td><?php print($token["token_lifetime"]); ?></td>
+										<td><a href="?rev-token&id=<?php print($token["token_id"]); ?>">[Rev]</a></td>
+									</tr>
+								<?php
+							}
+						?>
+						
 					</table>
 				</div>
 				<div class="section" id="account-endpoints">
 					<h2><a name="endpoints">My endpoints</a></h2>
 					<h3>Roll your own service connected to the SYSTEM</h3>
-					<table>
-						<tr>
-							<th>Handle</th>
-							<th>Endpoint</th>
-							<th>Protocol</th>
-							<th>Options</th>
-						</tr>
-						<tr>
-							<td>lists</td>
-							<td>http://lists.kitinfo.de/accounts_endpoint.php</td>
-							<td>1</td>
-							<td>[Del]</td>
-						</tr>
-						<tr>
-							<td><input type="text" /></td>
-							<td><input type="text" /></td>
-							<td>-</td>
-							<td>[Create]</td>
-						</tr>
-					</table>
+					<?php
+						if(isset($_POST["add-remote"])){
+							if($_POST["add-remote"]===false){
+								?>
+									Failed to add remote authenticator.
+								<?php
+							}
+							else{
+								?>
+									<p>
+									Remote added with user <em><?php print($_POST["add-remote"]["user"]); ?></em>
+									and password <em><?php print($_POST["add-remote"]["pass"]); ?></em>
+									</p>
+								<?php
+							}
+						}
+					?>
+					<form action="?" method="POST">
+						<table>
+							<tr>
+								<th>Handle</th>
+								<th>Endpoint</th>
+								<th>Protocol</th>
+								<th>Options</th>
+							</tr>
+							<?php
+								foreach($_SESSION["remotes"] as $remote){
+									?>
+										<tr>
+											<td><?php print($remote["remote_handle"]); ?></td>
+											<td><?php print($remote["remote_endpoint"]); ?></td>
+											<td><?php print($remote["remote_protocol_version"]); ?></td>
+											<td><a href="?del-remote&id=<?php print($remote["remote_id"]); ?>">[Del]</a></td>
+										</tr>
+									<?php
+								}
+							?>
+							<tr>
+								<td><input type="text" name="remote_handle" /></td>
+								<td><input type="text" name="remote_endpoint" /></td>
+								<td>-</td>
+								<td><input type="submit" value="Create" name="add-remote" /></td>
+							</tr>
+						</table>
+					</form>
 				</div>
 			</div>
 			<div id="foot">

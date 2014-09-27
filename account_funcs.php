@@ -63,6 +63,45 @@
 				"unused"=>$attributes_unused->fetchAll(PDO::FETCH_ASSOC));
 	}
 	
+	function get_tokens($uid){
+		global $db;
+		$token_data=$db->prepare("
+		SELECT token_id,
+			token_token,
+			token_issued,
+			token_lifetime,
+			remote_handle
+		FROM tokens
+		JOIN remotes
+			ON tokens.token_remote = remotes.remote_id
+		WHERE tokens.token_account = :uid
+		");
+		
+		if(!$token_data->execute(array(":uid"=>$uid))){
+			return false;
+		}
+		
+		return $token_data->fetchAll(PDO::FETCH_ASSOC);
+	}
+	
+	function get_remotes($uid){
+		global $db;
+		$remote_data=$db->prepare("
+			SELECT remote_id, 
+				remote_handle, 
+				remote_endpoint, 
+				remote_protocol_version 
+			FROM remotes 
+			WHERE remote_manager = :uid
+		");
+		
+		if(!$remote_data->execute(array(":uid"=>$uid))){
+			return false;
+		}
+		
+		return $remote_data->fetchAll(PDO::FETCH_ASSOC);
+	}
+	
 	function login($user, $pass, $fetch_full_profile=false){
 		global $_SESSION;
 		global $db;
@@ -95,8 +134,8 @@
 		
 		if($fetch_full_profile){
 			$_SESSION["attributes"]=get_attributes($_SESSION["account"]);
-			//fetch all tokens
-			//fetch all remotes
+			$_SESSION["tokens"]=get_tokens($_SESSION["account"]);
+			$_SESSION["remotes"]=get_remotes($_SESSION["account"]);
 		}
 	}
 	
@@ -135,5 +174,43 @@
 		global $db;
 		$insert_attribute=$db->prepare("INSERT INTO account_attributes (attribute_account, attribute_attribute, attribute_value) VALUES (:uid, :attrib, :value)");
 		return $insert_attribute->execute(array(":uid"=>$uid, ":attrib"=>$attribute, ":value"=>htmlentities($value)));
+	}
+	
+	function revoke_token($uid, $token){
+		global $db;
+		$update_tokens=$db->prepare("DELETE FROM tokens WHERE token_id = :token AND token_account = :uid");
+		return $update_tokens->execute(array(":uid"=>$uid, ":token"=>$token));
+	}
+	
+	function delete_remote($uid, $remote){
+		global $db;
+		$update_remotes=$db->prepare("DELETE FROM remotes WHERE remote_id = :remote AND remote_manager = :uid");
+		return $update_remotes->execute(array(":uid"=>$uid, ":remote"=>$remote));
+	}
+	
+	function add_remote($uid, $handle, $endpoint){
+		global $db;
+		if(!isset($handle)||!isset($endpoint)){
+			return false;
+		}
+		
+		if(empty($handle)||empty($endpoint)){
+			return false;
+		}
+		
+		$remote_data=$db->prepare("
+			INSERT INTO remotes
+			(remote_handle, remote_endpoint, remote_user, remote_password, remote_manager) 
+			VALUES (:handle, :endpoint, :user, :pass, :uid)
+		");
+		
+		$user=hash("sha256", mt_rand());
+		$pass=hash("sha256", mt_rand());
+		
+		if(!$remote_data->execute(array(":handle"=>$handle, ":endpoint"=>$endpoint, ":user"=>$user, ":pass"=>$pass, ":uid"=>$uid))){
+			return false;
+		}
+		
+		return array("user"=>$user, "pass"=>$pass);
 	}
 ?>
