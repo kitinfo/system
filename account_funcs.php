@@ -110,7 +110,7 @@
 			logoff("?empty-user");
 		}
 		
-		$_SESSION["username"]=htmlentities($user);
+		$_SESSION["username"]=strtolower(htmlentities($user));
 		
 		$user_data=$db->prepare("SELECT account_id, account_handle FROM accounts WHERE account_handle = :username");
 		if(!$user_data->execute(array(
