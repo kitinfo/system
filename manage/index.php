@@ -15,6 +15,10 @@
 		logoff("?session-stolen");
 	}
 	
+	if(!isset($_SESSION["full_login"])||!$_SESSION["full_login"]){
+		logoff("?session-elevation");
+	}
+	
 	if(isset($_POST["terminate"])){
 		if(verify_password($_SESSION["account"], $_POST["pass"])){
 			if(delete_account($_SESSION["account"])){

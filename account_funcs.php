@@ -102,6 +102,7 @@
 		return $remote_data->fetchAll(PDO::FETCH_ASSOC);
 	}
 	
+	//TODO have this return a boolean success flag
 	function login($user, $pass, $fetch_full_profile=false){
 		global $_SESSION;
 		global $db;
@@ -131,11 +132,13 @@
 		$_SESSION["remote"]=$_SERVER["REMOTE_ADDR"];
 		$_SESSION["account"]=$user_data["account_id"];
 		$_SESSION["username"]=$user_data["account_handle"];
+		$_SESSION["full_login"]=false;
 		
 		if($fetch_full_profile){
 			$_SESSION["attributes"]=get_attributes($_SESSION["account"]);
 			$_SESSION["tokens"]=get_tokens($_SESSION["account"]);
 			$_SESSION["remotes"]=get_remotes($_SESSION["account"]);
+			$_SESSION["full_login"]=true;
 		}
 	}
 	

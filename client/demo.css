@@ -1,0 +1,38 @@
+#center-wrap{
+	margin:0 auto;
+	width:90%;
+	background-color:#ddd;
+	padding:1em;
+	border-radius:1em;
+	text-align:center;
+}
+
+h1{
+	text-align:center;
+}
+
+a.system-login{
+	display:inline-block;
+	border-radius:0.5em;
+	background-color:#d6d6d6;
+	text-align:center;
+	text-decoration:none;
+	box-shadow: 0 0 0.3em 0.15em rgba(0,0,0,0.5);
+}
+
+.system-login .system-head{
+	padding:0.3em;
+	display:block;
+	color:#666;
+	border-bottom:0.1em solid #888;
+}
+
+.system-login .system-name {
+	display:block;
+	font-size:170%;
+	font-weight:bold;
+	background-color:#e6e6e6;
+	padding:0.3em;
+	border-radius:0 0 0.2em 0.2em;
+	color:#444;
+}
