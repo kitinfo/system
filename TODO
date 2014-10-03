@@ -1,1 +1,3 @@
 Reverse Authentication mode (Client calls provider with authentication data)
+unprocessed token =>  identifier
+show client name in verifier

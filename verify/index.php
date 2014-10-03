@@ -49,17 +49,27 @@
 		require_once("../db_conn.php");
 		
 		$remote_data=remote_info($_GET["service"]);
-		if($remote_date===FALSE){
+		if($remote_data===FALSE){
 			exit("Invalid service, aborting.");
 		}
 		
-		if(isset($_POST["confirm_token"])){
-			//TODO push token to db
-			//TODO authenticate account
+		if(isset($_POST["confirm"])){
+			$ident="ident_".mt_rand().mt_rand().mt_rand();
+			if(isset($_GET["ident"])){
+				$ident=$_GET["ident"];
+			}
+		
+			if(!proto_ident_confirm($_SESSION["account"], $remote_data, $ident)){
+				die("Failed to confirm identity");
+			}
 		}
 		
 		$active_token=service_token($_SESSION["account"], $_GET["service"]);
 		if($active_token!==FALSE){
+			if(!proto_authenticate_token($remote_data, $active_token["token_token"])){
+				exit("Failed to authenticate.");
+			}
+			header("Location: ".$remote_data["remote_redirect"]."?token=".$active_token["token_token"]);
 			exit("Redirecting to service");
 		}
 		
@@ -80,7 +90,7 @@
 						</div>
 						
 						The service that brought you here asked the SYSTEM the following things about you
-						<form>
+						<form method="POST" action="">
 							<div id="user-forms">
 								<div class="form-entry">
 									<div class="input">
@@ -96,7 +106,7 @@
 										<!-- This space intentionally left blank //-->
 									</div>
 									<div class="description">
-										<input type="submit" name="confirm_token" />
+										<input type="submit" name="confirm" />
 									</div>
 								</div>
 							</div>

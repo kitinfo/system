@@ -214,7 +214,7 @@
 							foreach($_SESSION["tokens"] as $token){
 								?>
 									<tr>
-										<td><?php print($token["token_token"]); ?></td>
+										<td><?php print(substr($token["token_token"], 0, 10) . '...'); ?></td>
 										<td><?php print($token["remote_handle"]); ?></td>
 										<td><?php print($token["token_issued"]); ?></td>
 										<td><?php print($token["token_lifetime"]); ?></td>
@@ -272,7 +272,7 @@
 								<td><input type="text" name="remote_handle" /></td>
 								<td><input type="text" name="remote_endpoint" /></td>
 								<td><input type="text" name="remote_redirect" /></td>
-								<td>-</td>
+								<td>systemv1</td>
 								<td><input type="submit" value="Create" name="add-remote" /></td>
 							</tr>
 						</table>

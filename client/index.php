@@ -16,7 +16,7 @@
 				<span class="system-name">SYSTEM</span>
 			</a>
 			
-			<a class="system-login" href="http://auth.local.host/kitinfo-accounts/verify/?service=demo&token=asdasdasd">
+			<a class="system-login" href="http://auth.local.host/kitinfo-accounts/verify/?service=demo&ident=asdasdasd">
 				<span class="system-head">Sign in with the</span>
 				<span class="system-name">SYSTEM</span>
 			</a>
