@@ -6,7 +6,6 @@
 		login($_POST["username"], $_POST["pass"], false);
 	}
 
-	
 	if(!isset($_SESSION["account"])){
 		?>
 			<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
@@ -46,12 +45,66 @@
 	}
 	else{
 		require_once("../account_funcs.php");
+		require_once("../protocol_funcs.php");
 		require_once("../db_conn.php");
 		
-		print("Welcome ".$_SESSION["username"]);
-			//check if theres an active token for the service
-				//log in
-			//else show verification page
+		$remote_data=remote_info($_GET["service"]);
+		if($remote_date===FALSE){
+			exit("Invalid service, aborting.");
+		}
+		
+		if(isset($_POST["confirm_token"])){
+			//TODO push token to db
+			//TODO authenticate account
+		}
+		
+		$active_token=service_token($_SESSION["account"], $_GET["service"]);
+		if($active_token!==FALSE){
+			exit("Redirecting to service");
+		}
+		
+		?>
+			<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+			<html xmlns="http://www.w3.org/1999/xhtml">
+				<head>
+					<title>Verify SYSTEM Association</title>
+					<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+					<link rel="stylesheet" type="text/css" href="../static/accounts.css" />
+					<meta name="robots" content="noindex,nofollow" />
+				</head>
+				<body>
+					<div id="center-box" class="padded">
+						<h1 style="margin-bottom:0;padding-bottom:0;">Hi <?php print($_SESSION["username"]); ?>!</h1>
+						<div style="text-align:center;padding-bottom:0.7em;">
+							<a class="note">(Not you?)</a>
+						</div>
+						
+						The service that brought you here asked the SYSTEM the following things about you
+						<form>
+							<div id="user-forms">
+								<div class="form-entry">
+									<div class="input">
+										<input type="checkbox" checked="checked" name="username" disabled="disabled"/>
+									</div>
+									<div class="description">
+										<h3>User Name</h3>
+										Your account name.
+									</div>
+								</div>
+								<div class="form-entry">
+									<div class="input">
+										<!-- This space intentionally left blank //-->
+									</div>
+									<div class="description">
+										<input type="submit" name="confirm_token" />
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</body>
+			</html>
+		<?php
 	}
 ?>
 

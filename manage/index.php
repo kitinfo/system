@@ -65,7 +65,7 @@
 	}
 	
 	if(isset($_POST["add-remote"])){
-		$_POST["add-remote"]=add_remote($_SESSION["account"], $_POST["remote_handle"], $_POST["remote_endpoint"]);
+		$_POST["add-remote"]=add_remote($_SESSION["account"], $_POST["remote_handle"], $_POST["remote_endpoint"], $_POST["remote_redirect"]);
 		if($_POST["add-remote"]!==false){
 			$_SESSION["remotes"]=get_remotes($_SESSION["account"]);
 		}
@@ -251,6 +251,7 @@
 							<tr>
 								<th>Handle</th>
 								<th>Endpoint</th>
+								<th>Redirect</th>
 								<th>Protocol</th>
 								<th>Options</th>
 							</tr>
@@ -260,6 +261,7 @@
 										<tr>
 											<td><?php print($remote["remote_handle"]); ?></td>
 											<td><?php print(htmlentities($remote["remote_endpoint"])); ?></td>
+											<td><?php print(htmlentities($remote["remote_redirect"])); ?></td>
 											<td><?php print($remote["remote_protocol_version"]); ?></td>
 											<td><a href="?del-remote&id=<?php print($remote["remote_id"]); ?>">[Del]</a></td>
 										</tr>
@@ -269,6 +271,7 @@
 							<tr>
 								<td><input type="text" name="remote_handle" /></td>
 								<td><input type="text" name="remote_endpoint" /></td>
+								<td><input type="text" name="remote_redirect" /></td>
 								<td>-</td>
 								<td><input type="submit" value="Create" name="add-remote" /></td>
 							</tr>

@@ -22,7 +22,7 @@ h3{
 	margin:0 auto;
 }
 
-#center-box.padded{
+.padded{
 	padding:1em;
 }
 
@@ -81,4 +81,25 @@ h3{
 #foot{
 	padding:1em;
 	font-size:90%;
+}
+
+.note{
+	font-size:80%;
+	font-style:italic;
+}
+
+.form-entry{
+	text-align:right;
+	background-color:#ddd;
+	padding:1em;
+}
+
+.form-entry .input, .form-entry .description{
+	display:inline-block;
+	vertical-align:top;
+}
+
+.form-entry .description{
+	width:50%;
+	text-align:left;
 }

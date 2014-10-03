@@ -89,8 +89,9 @@
 		$remote_data=$db->prepare("
 			SELECT remote_id, 
 				remote_handle, 
-				remote_endpoint, 
-				remote_protocol_version 
+				remote_endpoint,
+				remote_redirect,				
+				remote_protocol
 			FROM remotes 
 			WHERE remote_manager = :uid
 		");
@@ -185,7 +186,7 @@
 		return $update_remotes->execute(array(":uid"=>$uid, ":remote"=>$remote));
 	}
 	
-	function add_remote($uid, $handle, $endpoint){
+	function add_remote($uid, $handle, $endpoint, $redirect){
 		global $db;
 		if(!isset($handle)||!isset($endpoint)){
 			return false;
@@ -197,8 +198,8 @@
 		
 		$remote_data=$db->prepare("
 			INSERT INTO remotes
-			(remote_handle, remote_endpoint, remote_user, remote_password, remote_manager) 
-			VALUES (:handle, :endpoint, :user, :pass, :uid)
+			(remote_handle, remote_endpoint, remote_redirect, remote_user, remote_password, remote_manager) 
+			VALUES (:handle, :endpoint, :redir, :user, :pass, :uid)
 		");
 		
 		$user=hash("sha256", mt_rand());
@@ -207,6 +208,7 @@
 		if(!$remote_data->execute(array(
 			":handle"=>htmlentities($handle), 
 			":endpoint"=>$endpoint, 
+			":redir"=>$redirect,
 			":user"=>$user, 
 			":pass"=>$pass, 
 			":uid"=>$uid

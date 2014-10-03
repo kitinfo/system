@@ -11,7 +11,12 @@
 		<div id="center-wrap">
 			<h1>Welcome to the SERVICE</h1>
 			To use our facilities, we kindly ask you to<br/><br/>
-			<a class="system-login" href="http://auth.local.host/kitinfo-accounts/verify/">
+			<a class="system-login" href="http://auth.local.host/kitinfo-accounts/verify/?service=demo">
+				<span class="system-head">Sign in with the</span>
+				<span class="system-name">SYSTEM</span>
+			</a>
+			
+			<a class="system-login" href="http://auth.local.host/kitinfo-accounts/verify/?service=demo&token=asdasdasd">
 				<span class="system-head">Sign in with the</span>
 				<span class="system-name">SYSTEM</span>
 			</a>
