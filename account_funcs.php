@@ -133,13 +133,12 @@
 		$_SESSION["remote"]=$_SERVER["REMOTE_ADDR"];
 		$_SESSION["account"]=$user_data["account_id"];
 		$_SESSION["username"]=$user_data["account_handle"];
-		$_SESSION["full_login"]=false;
+		$_SESSION["full_login"]=$fetch_full_profile;
 		
 		if($fetch_full_profile){
 			$_SESSION["attributes"]=get_attributes($_SESSION["account"]);
 			$_SESSION["tokens"]=get_tokens($_SESSION["account"]);
 			$_SESSION["remotes"]=get_remotes($_SESSION["account"]);
-			$_SESSION["full_login"]=true;
 		}
 	}
 	

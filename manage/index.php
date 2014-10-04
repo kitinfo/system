@@ -76,7 +76,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
-		<title><?php print($_SESSION["username"]); ?> - #kitinfo Unified Account Management</title>
+		<title><?php print($_SESSION["username"]); ?> - The SYSTEM</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<link rel="icon" href="favicon.ico" type="image/x-icon" />
 		<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
@@ -280,7 +280,7 @@
 				</div>
 			</div>
 			<div id="foot">
-				#kitinfo Unified Accounts System
+				The SYSTEM - Unified Accounts
 			</div>
 		</div>
 	</body>

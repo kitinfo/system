@@ -106,7 +106,7 @@
 										<!-- This space intentionally left blank //-->
 									</div>
 									<div class="description">
-										<input type="submit" name="confirm" />
+										<input type="submit" name="confirm" value="Confirm" />
 									</div>
 								</div>
 							</div>
