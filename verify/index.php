@@ -1,4 +1,9 @@
 <?php
+
+	/**
+		SYSTEM verification flow
+	*/
+
 	session_start();
 	if(isset($_POST["login"])){
 		require_once("../account_funcs.php");
@@ -53,23 +58,26 @@
 			exit("Invalid service, aborting.");
 		}
 		
-		if(isset($_POST["confirm"])){
-			$ident="ident_".mt_rand().mt_rand().mt_rand();
-			if(isset($_GET["ident"])){
-				$ident=$_GET["ident"];
-			}
-		
-			if(!proto_ident_confirm($_SESSION["account"], $remote_data, $ident)){
-				die("Failed to confirm identity");
-			}
+		//provide fallback identity
+		$ident="ident_".mt_rand().mt_rand().mt_rand();
+		if(isset($_GET["ident"])){
+			$ident=$_GET["ident"];
 		}
 		
-		$active_token=service_token($_SESSION["account"], $_GET["service"]);
-		if($active_token!==FALSE){
-			if(!proto_authenticate_token($remote_data, $active_token["token_token"])){
+		if(isset($_POST["confirm"])){
+			if(!add_association($_SESSION["account"], $remote_data["remote_id"])){
+				die("Failed to confirm identity");
+			}
+			
+			$_SESSION["associations"]=get_associations($_SESSION["account"]);
+		}
+		
+		$active_assoc=active_association($_SESSION["account"], $_GET["service"]);
+		if($active_assoc!==FALSE){
+			if(!proto_authenticate_identity($remote_data, $ident)){
 				exit("Failed to authenticate.");
 			}
-			header("Location: ".$remote_data["remote_redirect"]."?token=".$active_token["token_token"]);
+			header("Location: ".$remote_data["remote_redirect"]);
 			exit("Redirecting to service");
 		}
 		

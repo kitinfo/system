@@ -63,25 +63,24 @@
 				"unused"=>$attributes_unused->fetchAll(PDO::FETCH_ASSOC));
 	}
 	
-	function get_tokens($uid){
+	function get_associations($uid){
 		global $db;
-		$token_data=$db->prepare("
-		SELECT token_id,
-			token_token,
-			token_issued,
-			token_lifetime,
+		$assoc_data=$db->prepare("
+		SELECT association_id,
+			datetime(association_issued, 'unixepoch') AS association_issued,
+			association_lifetime,
 			remote_handle
-		FROM tokens
+		FROM associations
 		JOIN remotes
-			ON tokens.token_remote = remotes.remote_id
-		WHERE tokens.token_account = :uid
+			ON associations.association_remote = remotes.remote_id
+		WHERE associations.association_account = :uid
 		");
 		
-		if(!$token_data->execute(array(":uid"=>$uid))){
+		if(!$assoc_data->execute(array(":uid"=>$uid))){
 			return false;
 		}
 		
-		return $token_data->fetchAll(PDO::FETCH_ASSOC);
+		return $assoc_data->fetchAll(PDO::FETCH_ASSOC);
 	}
 	
 	function get_remotes($uid){
@@ -137,7 +136,7 @@
 		
 		if($fetch_full_profile){
 			$_SESSION["attributes"]=get_attributes($_SESSION["account"]);
-			$_SESSION["tokens"]=get_tokens($_SESSION["account"]);
+			$_SESSION["associations"]=get_associations($_SESSION["account"]);
 			$_SESSION["remotes"]=get_remotes($_SESSION["account"]);
 		}
 	}
@@ -173,10 +172,10 @@
 		return $insert_attribute->execute(array(":uid"=>$uid, ":attrib"=>$attribute, ":value"=>htmlentities($value)));
 	}
 	
-	function revoke_token($uid, $token){
+	function revoke_association($uid, $service_id){
 		global $db;
-		$update_tokens=$db->prepare("DELETE FROM tokens WHERE token_id = :token AND token_account = :uid");
-		return $update_tokens->execute(array(":uid"=>$uid, ":token"=>$token));
+		$update_assoc=$db->prepare("DELETE FROM associations WHERE association_remote = :service AND association_account = :uid");
+		return $update_assoc->execute(array(":uid"=>$uid, ":service"=>$service_id));
 	}
 	
 	function delete_remote($uid, $remote){
@@ -216,5 +215,20 @@
 		}
 		
 		return array("user"=>$user, "pass"=>$pass);
+	}
+	
+	function add_association($uid, $remote_id){
+		global $db;
+		
+		$store_query=$db->prepare("INSERT INTO associations
+		(association_account, association_remote, association_issued, association_lifetime) 
+		VALUES (:uid, :remote, :time, :lifetime)");
+		
+		return $store_query->execute(array(
+			":uid"=>$uid,
+			":time"=>time(),
+			":remote"=>$remote_id,
+			":lifetime"=>9001
+		));
 	}
 ?>

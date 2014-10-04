@@ -1,26 +1,11 @@
 <?php
-	function store_token($uid, $remote_id, $token){
-		global $db;
-		
-		$store_query=$db->prepare("INSERT INTO tokens
-		(token_account, token_remote, token_token, token_issued, token_lifetime) 
-		VALUES (:uid, :remote, :token, :issue, :lifetime)");
-		
-		return $store_query->execute(array(
-			":uid"=>$uid,
-			":remote"=>$remote_id,
-			":token"=>$token,
-			":issue"=>time(),
-			":lifetime"=>9001
-		));
-	}
-
-	function systemv1_token_prepare($ident, $remote_data){
+	function systemv1_token_prepare($remote_data, $ident){
 		return hash("sha256", $ident.$remote_data["remote_password"]);
 	}
 	
-	function systemv1_authenticate_token($remote_data, $token){
-		$curl=curl_init($remote_data["remote_endpoint"]."?token=".$token);
+	function systemv1_authenticate_identity($remote_data, $ident){
+		$token=systemv1_token_prepare($remote_data, $ident);
+		$curl=curl_init($remote_data["remote_endpoint"]);
 		//TODO add headers
 		//TODO check return codes
 		//TODO error checking
@@ -29,26 +14,11 @@
 		return true;
 	}
 	
-	function systemv1_ident_confirm($uid, $remote_data, $ident){
-		$token=systemv1_token_prepare($ident, $remote_data);
-		return store_token($uid, $remote_data["remote_id"], $token);
-	}
-	
-	function proto_ident_confirm($uid, $remote_data, $ident){
+	function proto_authenticate_identity($remote_data, $ident){
 		switch($remote_data["remote_protocol"]){
 			case "1":
 			case "systemv1":
-				return systemv1_ident_confirm($uid, $remote_data, $ident);
-			default:
-				return false;
-		}
-	}
-	
-	function proto_authenticate_token($remote_data, $token){
-		switch($remote_data["remote_protocol"]){
-			case "1":
-			case "systemv1":
-				return systemv1_authenticate_token($remote_data, $token);
+				return systemv1_authenticate_identity($remote_data, $ident);
 			default:
 				return false;
 		}
@@ -79,26 +49,25 @@
 		return $query_remote->fetch(PDO::FETCH_ASSOC);
 	}
 	
-	function service_token($uid, $service){
+	function active_association($uid, $service_handle){
 		global $db;
-		$query_token=$db->prepare("
+		$query_assoc=$db->prepare("
 			SELECT 
-				token_token,
-				token_issued, 
-				token_lifetime
+				association_issued, 
+				association_lifetime
 			FROM 
-				tokens
+				associations
 			JOIN
 				remotes
-				ON remotes.remote_id = tokens.token_remote
+				ON remotes.remote_id = associations.association_remote
 			WHERE
-				token_account = :uid
+				association_account = :uid
 				AND remote_handle = :remote");
 				
-		if(!$query_token->execute(array(":uid"=>$uid, ":remote"=>$service))){
+		if(!$query_assoc->execute(array(":uid"=>$uid, ":remote"=>$service_handle))){
 			return FALSE;
 		}		
 		
-		return $query_token->fetch(PDO::FETCH_ASSOC);
+		return $query_assoc->fetch(PDO::FETCH_ASSOC);
 	}
 ?>

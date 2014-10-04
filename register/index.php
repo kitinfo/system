@@ -1,5 +1,9 @@
 <?php
 	
+	/**
+		SYSTEM account registration procedure
+	*/
+	
 	//Crude Form-Spamming detection
 	if(isset($_POST["pass-rep-sp"])&&!empty($_POST["pass-rep-sp"])){
 		exit("Spam.");

@@ -1,4 +1,9 @@
 ﻿<?php
+	
+	/**
+		SYSTEM management interface
+	*/
+
 	require_once("../account_funcs.php");
 	require_once("../db_conn.php");
 	session_start();
@@ -52,9 +57,9 @@
 		}
 	}
 	
-	if(isset($_GET["rev-token"])&&isset($_GET["id"])){
-		if(revoke_token($_SESSION["account"], intval($_GET["id"]))){
-			$_SESSION["tokens"]=get_tokens($_SESSION["account"]);
+	if(isset($_GET["rev-assoc"])&&isset($_GET["id"])){
+		if(revoke_association($_SESSION["account"], intval($_GET["id"]))){
+			$_SESSION["associations"]=get_associations($_SESSION["account"]);
 		}
 	}
 	
@@ -94,8 +99,8 @@
 					Attributes
 				</a>
 				
-				<a href="#tokens" class="item">
-					Tokens
+				<a href="#associations" class="item">
+					Associations
 				</a>
 				
 				<a href="#endpoints" class="item">
@@ -199,26 +204,24 @@
 						</table>
 					</form>
 				</div>
-				<div class="section" id="account-tokens">
-					<h2><a name="tokens">Active tokens</a></h2>
+				<div class="section" id="account-associations">
+					<h2><a name="associations">Active associations</a></h2>
 					<h3>Where the SYSTEM has authenticated you</h3>
 					<table>
 						<tr>
-							<th>Token</th>
 							<th>Service</th>
 							<th>Issued</th>
 							<th>Lifetime</th>
 							<th>Options</th>
 						</tr>
 						<?php
-							foreach($_SESSION["tokens"] as $token){
+							foreach($_SESSION["associations"] as $assoc){
 								?>
 									<tr>
-										<td><?php print(substr($token["token_token"], 0, 10) . '...'); ?></td>
-										<td><?php print($token["remote_handle"]); ?></td>
-										<td><?php print($token["token_issued"]); ?></td>
-										<td><?php print($token["token_lifetime"]); ?></td>
-										<td><a href="?rev-token&id=<?php print($token["token_id"]); ?>">[Rev]</a></td>
+										<td><?php print($assoc["remote_handle"]); ?></td>
+										<td><?php print($assoc["association_issued"]); ?></td>
+										<td><?php print($assoc["association_lifetime"]); ?></td>
+										<td><a href="?rev-assoc&id=<?php print($assoc["association_id"]); ?>">[Rev]</a></td>
 									</tr>
 								<?php
 							}
@@ -262,7 +265,7 @@
 											<td><?php print($remote["remote_handle"]); ?></td>
 											<td><?php print(htmlentities($remote["remote_endpoint"])); ?></td>
 											<td><?php print(htmlentities($remote["remote_redirect"])); ?></td>
-											<td><?php print($remote["remote_protocol_version"]); ?></td>
+											<td><?php print($remote["remote_protocol"]); ?></td>
 											<td><a href="?del-remote&id=<?php print($remote["remote_id"]); ?>">[Del]</a></td>
 										</tr>
 									<?php
