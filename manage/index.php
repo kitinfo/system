@@ -284,6 +284,11 @@
 			</div>
 			<div id="foot">
 				The SYSTEM - Unified Accounts
+				<span style="float:right;">
+					<a href="https://github.com/kitinfo/system">[source]</a>
+					<a href="http://www.kopimi.com/kopimi/"><img src="../static/kopimi.png" alt="kopimi"/></a>
+					<a href="http://wtfpl.net/"><img src="../static/wtfpl.png" alt="wtfpl"/></a>
+				</span>
 			</div>
 		</div>
 	</body>
