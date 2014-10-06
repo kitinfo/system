@@ -9,7 +9,8 @@
 	session_start();
 	
 	if(isset($_GET["logoff"])){
-		session_destroy();
+		session_regenerate_id(TRUE);
+		$_SESSION=array();
 		header("Location: ./");
 	}
 	
