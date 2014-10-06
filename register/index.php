@@ -28,8 +28,8 @@
 	
 	require_once("../db_conn.php");
 	
-	$insert_statement=$db->prepare("INSERT INTO accounts (account_handle, account_password, account_salt) VALUES (:name, :pass, :salt)");
-	if(!$insert_statement->execute(
+	$insert_user=$db->prepare("INSERT INTO accounts (account_handle, account_password, account_salt) VALUES (:name, :pass, :salt)");
+	if(!$insert_user->execute(
 		array(
 			":name" => $username,
 			":pass" => $pass,
@@ -37,20 +37,33 @@
 		)
 	)){
 		var_dump($db->errorInfo());
-		exit("Failed to insert");
+		exit("Failed to add user");
 	}
 	
-	$insert_statement=$db->prepare("INSERT INTO account_attributes (attribute_account, attribute_attribute, attribute_value, attribute_modifiable) VALUES (:uid, 2, :timestamp, 0)");
-	if(!$insert_statement->execute(
+	$uid=$db->lastInsertId();
+	
+	$insert_attrib=$db->prepare("INSERT INTO account_attributes (attribute_account, attribute_attribute, attribute_value, attribute_modifiable) VALUES (:uid, :attrib, :value, 0)");
+	if(!$insert_attrib->execute(
 		array(
-			":uid" => $db->lastInsertId(),
-			":timestamp" => time()
+			":uid" => $uid,
+			":attrib" => 2,
+			":value" => time()
 		)
 	)){
 		var_dump($db->errorInfo());
-		exit("Failed to insert");
+		exit("Failed to insert rtime attribute");
 	}
 	
+	if(!$insert_attrib->execute(
+		array(
+			":uid" => $uid,
+			":attrib" => 8,
+			":value" => $username
+		)
+	)){
+		var_dump($db->errorInfo());
+		exit("Failed to insert attribute");
+	}
 	
 	require_once("../account_funcs.php");
 	session_start();

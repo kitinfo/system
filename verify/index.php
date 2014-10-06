@@ -53,6 +53,8 @@
 		require_once("../protocol_funcs.php");
 		require_once("../db_conn.php");
 		
+		$attributes_requested=array("username");
+		
 		$remote_data=remote_info($_GET["service"]);
 		if($remote_data===FALSE){
 			exit("Invalid service, aborting.");
@@ -74,7 +76,7 @@
 		
 		$active_assoc=active_association($_SESSION["account"], $_GET["service"]);
 		if($active_assoc!==FALSE){
-			if(!proto_authenticate_identity($remote_data, $ident)){
+			if(!proto_authenticate_identity($remote_data, $ident, $_SESSION["attributes"]["active"], $attributes_requested)){
 				exit("Failed to authenticate.");
 			}
 			header("Location: ".$remote_data["remote_redirect"]);

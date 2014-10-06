@@ -59,7 +59,17 @@
 			die();
 		}
 		
-		return array("active"=>$attribute_data->fetchAll(PDO::FETCH_ASSOC),
+		//fix array to use attribute name as index
+		$attribute_data=$attribute_data->fetchAll(PDO::FETCH_ASSOC);
+		//FIXME handle errors here
+		$attributes_active=array();
+		foreach($attribute_data as $attrib){
+			$attributes_active[$attrib["attribute_name"]]=$attrib;
+		}
+		
+		//FIXME do the same for unused attributes
+		
+		return array("active"=>$attributes_active,
 				"unused"=>$attributes_unused->fetchAll(PDO::FETCH_ASSOC));
 	}
 	
@@ -134,8 +144,8 @@
 		$_SESSION["username"]=$user_data["account_handle"];
 		$_SESSION["full_login"]=$fetch_full_profile;
 		
+		$_SESSION["attributes"]=get_attributes($_SESSION["account"]);
 		if($fetch_full_profile){
-			$_SESSION["attributes"]=get_attributes($_SESSION["account"]);
 			$_SESSION["associations"]=get_associations($_SESSION["account"]);
 			$_SESSION["remotes"]=get_remotes($_SESSION["account"]);
 		}
