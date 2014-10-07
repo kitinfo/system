@@ -1,0 +1,79 @@
+The SYSTEM
+----------
+The SYSTEM allows remote services to outsource authentication
+of its users to a centralized authority - the SYSTEM.
+
+Design Considerations
+---------------------
+The SYSTEM allows an authentication client ("service") to associate
+a local "identifier" (e.g. a session or any method of identifying 
+individuals across requests) with a unique user and specific information 
+about that user ("attributes"), without having to implement local 
+authentication measures or being required to store the attributes locally 
+(though that might be beneficial for some applications).
+
+Upon first use of a service, the user is presented with a review of
+which attributes the service requested and asked to authorize acess
+by the service ("association").
+Associations persist across identifiers can thus be reused (auto sig-non).
+The user can revoke associations at any time in the management interface.
+
+Communication between the SYSTEM and the service is authenticated by a
+pre-shared user/secret pair and may optionally be protected by TLS.
+
+Authentication Protocol
+-----------------------
+The service refers the user to the SYSTEM verification endpoint, passing
+its service handle, an identifier of its choice and a comma-separated list 
+of requested attributes as GET parameters.
+
+Example URL:
+	https://account.kitinfo.de/verify/	|	Endpoint
+	?service=demo				|	Service Handle
+	&ident=sess_42				|	Session Identifier
+	&req=username				|	Requested Attributes
+
+The SYSTEM will then authenticate the user against its database, and if
+no active association for the requesting service exists, require the users
+confirmation for creating one.
+
+Having found an active association, the SYSTEM will perform a HTTP POST request 
+against the requesting services endpoint, identifying itself with the
+pre-shared user/password pair in HTTP Basic Authentication. The request contains
+the requested attributes (as confirmed by the user) as well as a session token as
+POSTDATA parameters.
+
+The token is computed as the sha256 hash of the concatenation of the provided 
+session identifier and the pre-shared service password.
+
+The user is finally redirected to the specified service redirect target.
+
+Setting up a service
+--------------------
+Log on to your SYSTEM account. The management panel contains an interface
+for the registration of remote services. Provide the requested information.
+
+	Handle
+		The unique shorthand indentifier for your service
+
+	Endpoint
+		The authentication endpoint to be called for your service
+
+	Redirect
+		Where to send the user after successfully authenticating
+		and confirming to use your service
+
+	Protocol
+		Authentication protocol to use with your endpoint -
+		currently not selectable
+
+Upon submission of the data, the service credentials are shown ONCE and must
+immediately be set up with the service.
+
+Closing Remarks
+---------------
+Please consider that this protocol has not been audited in any regard, neither
+in aspects of cryptographic security nor efficiency or any other criteria. 
+Should you plan on using the protocol for any application requiring a great deal 
+of safety and/or security, please have it audited first and inform the authors of 
+the results.
