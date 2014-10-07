@@ -15,8 +15,8 @@ authentication measures or being required to store the attributes locally
 Upon first use of a service, the user is presented with a review of
 which attributes the service requested and asked to authorize acess
 by the service ("association").
-Associations persist across identifiers can thus be reused (auto sig-non).
-The user can revoke associations at any time in the management interface.
+Associations persist across identifiers and can thus be reused (auto sign-on).
+The user may revoke associations at any time using the management interface.
 
 Communication between the SYSTEM and the service is authenticated by a
 pre-shared user/secret pair and may optionally be protected by TLS.
@@ -72,8 +72,10 @@ immediately be set up with the service.
 
 Closing Remarks
 ---------------
-Please consider that this protocol has not been audited in any regard, neither
-in aspects of cryptographic security nor efficiency or any other criteria. 
+Before using or implementing this protocol, consider that it has not been audited 
+in any regard, neither in aspects of cryptographic security nor efficiency or any 
+other relevant criteria.
+
 Should you plan on using the protocol for any application requiring a great deal 
 of safety and/or security, please have it audited first and inform the authors of 
 the results.
