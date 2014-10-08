@@ -27,50 +27,54 @@
 	function get_attributes($user_id){
 		global $db;
 		
-		$attribute_data=$db->prepare("
-		SELECT attribute_id,
-		       attribute_name,
-		       attribute_displayname,
-		       attribute_value,
-		       attribute_modifiable,
-		       attribute_type,
-		       attribute_desc
-		FROM account_attributes
-		JOIN attributes
-			ON attribute_attribute = attribute_id
-		WHERE attribute_account = :uid
+		$attributes=$db->prepare("
+		SELECT
+			attribute_id,
+			attribute_name,
+			attribute_displayname,
+			attribute_type,
+			attribute_desc,
+			acc_attrs.attribute_value AS attribute_value,
+			acc_attrs.attribute_modifiable AS attribute_modifiable
+		FROM attributes
+			LEFT JOIN ( 
+				SELECT 
+					attribute_attribute,
+					attribute_value,
+					attribute_modifiable
+				FROM account_attributes
+				WHERE attribute_account = :uid 
+			) acc_attrs
+			ON acc_attrs.attribute_attribute = attributes.attribute_id
 		");
 		
-		$attributes_unused=$db->prepare("
-			SELECT attribute_id, 
-				attribute_name, 
-				attribute_type, 
-				attribute_displayname
-			FROM attributes
-			WHERE attribute_id NOT IN ( 
-				SELECT attribute_attribute
-					FROM account_attributes
-					WHERE attribute_account = :uid
-			       )
-		");
-		
-		if(!$attribute_data->execute(array(":uid"=>$user_id))||!$attributes_unused->execute(array(":uid"=>$user_id))){
+		if(!$attributes->execute(array(":uid"=>$user_id))){
+			//FIXME this might be sensitive
 			var_dump($db->errorInfo());
-			die();
+			die("Database failure");
 		}
 		
-		//fix array to use attribute name as index
-		$attribute_data=$attribute_data->fetchAll(PDO::FETCH_ASSOC);
-		//FIXME handle errors here
+		$attribute_data=$attributes->fetchAll(PDO::FETCH_ASSOC);
+		if($attribute_data===false){
+			//FIXME this might be sensitive
+			var_dump($db->errorInfo());
+			die("Database failure");
+		}
+		
 		$attributes_active=array();
+		$attributes_unused=array();
 		foreach($attribute_data as $attrib){
-			$attributes_active[$attrib["attribute_name"]]=$attrib;
+			if($attrib["attribute_value"]){
+				$attributes_active[$attrib["attribute_name"]]=$attrib;
+			}
+			else{
+				$attributes_unused[$attrib["attribute_name"]]=$attrib;
+			}
+			
 		}
-		
-		//FIXME do the same for unused attributes
 		
 		return array("active"=>$attributes_active,
-				"unused"=>$attributes_unused->fetchAll(PDO::FETCH_ASSOC));
+				"unused"=>$attributes_unused);
 	}
 	
 	function get_associations($uid){

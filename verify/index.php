@@ -54,6 +54,9 @@
 		require_once("../db_conn.php");
 		
 		$attributes_requested=array("username");
+		if(isset($_GET["req"])){
+			$attributes_requested=explode(",", $_GET["req"]);
+		}
 		
 		$remote_data=remote_info($_GET["service"]);
 		if($remote_data===FALSE){
@@ -99,27 +102,48 @@
 							<a class="note">(Not you?)</a>
 						</div>
 						
-						The service that brought you here asked the SYSTEM the following things about you
 						<form method="POST" action="">
+							<span class="box-attach">The service asked the SYSTEM to provide</span>
 							<div id="user-forms">
-								<div class="form-entry">
-									<div class="input">
-										<input type="checkbox" checked="checked" name="username" disabled="disabled"/>
-									</div>
-									<div class="description">
-										<h3>User Name</h3>
-										Your account name.
-									</div>
-								</div>
-								<div class="form-entry">
-									<div class="input">
-										<!-- This space intentionally left blank //-->
-									</div>
-									<div class="description">
-										<input type="submit" name="confirm" value="Confirm" />
-									</div>
-								</div>
+								<?php
+									foreach($attributes_requested as $attr){
+										if(isset($_SESSION["attributes"]["active"][$attr])){
+											?>
+												<div class="form-entry">
+													<div class="input">
+														<?php print($_SESSION["attributes"]["active"][$attr]["attribute_value"]); ?>
+													</div>
+													<div class="description">
+														<h3><?php print($_SESSION["attributes"]["active"][$attr]["attribute_displayname"]); ?></h3>
+														<?php print($_SESSION["attributes"]["active"][$attr]["attribute_desc"]); ?>
+													</div>
+												</div>
+											<?php
+										}
+										else if(isset($_SESSION["attributes"]["unused"][$attr])){
+											?>
+												<div class="form-entry">
+													<div class="input">
+														<em style="color:#888;">Not set</em>
+													</div>
+													<div class="description">
+														<h3><?php print($_SESSION["attributes"]["unused"][$attr]["attribute_displayname"]); ?></h3>
+														<?php print($_SESSION["attributes"]["unused"][$attr]["attribute_desc"]); ?>
+													</div>
+												</div>
+											<?php
+										}
+										else{
+											print("Unknown attrib: ".$attr);
+										}
+									}
+								?>
 							</div>
+							<div class="box-attach" style="float:right;">
+								If you think that's ok, please 
+								<input type="submit" name="confirm" value="Confirm" />
+							</div>
+							<div class="icebreaker"></div>
 						</form>
 					</div>
 				</body>

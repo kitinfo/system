@@ -1,6 +1,4 @@
 Reverse Authentication mode (Client calls provider with authentication data)
 show client name in verifier
 registration timestamp aufloesen
-make requested attributes dynamic
-show database description of attributes on verify page
-show attribute content on verify page
+fix the "not you" link on the verify page

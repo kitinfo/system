@@ -52,7 +52,6 @@ h3{
 
 #user-forms{
 	text-align:center;
-	margin-bottom:1em;
 }
 
 #headmenu{
@@ -101,5 +100,19 @@ h3{
 
 .form-entry .description{
 	width:50%;
+	padding-left:1em;
+	margin-left:1em;
+	border-left:0.2em solid #888;
 	text-align:left;
+}
+
+.box-attach{
+	padding:0.3em;
+	background-color:#ddd;
+	font-weight:bold;
+	display:inline-block;
+}
+
+.icebreaker{
+	clear:both;
 }
