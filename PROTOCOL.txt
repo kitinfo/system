@@ -31,7 +31,7 @@ Example URL:
 	https://account.kitinfo.de/verify/	|	Endpoint
 	?service=demo				|	Service Handle
 	&ident=sess_42				|	Session Identifier
-	&req=username				|	Requested Attributes
+	&req=unique_id,username			|	Requested Attributes
 
 The SYSTEM will then authenticate the user against its database, and if
 no active association for the requesting service exists, require the users
