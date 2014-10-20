@@ -62,7 +62,18 @@
 		)
 	)){
 		var_dump($db->errorInfo());
-		exit("Failed to insert attribute");
+		exit("Failed to insert username attribute");
+	}
+	
+	if(!$insert_attrib->execute(
+		array(
+			":uid" => $uid,
+			":attrib" => 9,
+			":value" => $uid
+		)
+	)){
+		var_dump($db->errorInfo());
+		exit("Failed to insert uid attribute");
 	}
 	
 	require_once("../account_funcs.php");
