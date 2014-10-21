@@ -9,17 +9,17 @@
 		exit("Spam.");
 	}
 	
-	if(!isset($_POST["username"])||empty($_POST["username"])){
+	if(!isset($_POST["register_username"])||empty($_POST["register_username"])){
 		exit("Username missing or empty");
 	}
-	$username=strtolower(htmlentities($_POST["username"]));
+	$username=strtolower(htmlentities($_POST["register_username"]));
 	
-	if(!isset($_POST["pass"])||empty($_POST["pass"])){
+	if(!isset($_POST["register_password"])||empty($_POST["register_password"])){
 		exit("Password missing or empty");
 	}
-	$pass=$_POST["pass"];
+	$pass=$_POST["register_password"];
 	
-	if(!isset($_POST["pass-rep"])||$pass!=$_POST["pass-rep"]){
+	if(!isset($_POST["register_password_repetition"])||$pass!=$_POST["register_password_repetition"]){
 		exit("Repetitions dont match");
 	}
 	
@@ -79,7 +79,7 @@
 	require_once("../account_funcs.php");
 	session_start();
 	
-	login($username, $_POST["pass"], true);
+	login($username, $_POST["register_password"], true);
 	header("Location: ../manage/");
 	die();
 ?>

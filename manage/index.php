@@ -13,7 +13,7 @@
 	}
 	
 	if(isset($_POST["login"])){
-		login($_POST["username"], $_POST["pass"], true);
+		login($_POST["login_username"], $_POST["login_password"], true);
 	}
 	
 	if(!isset($_SESSION["remote"])||$_SESSION["remote"]!=$_SERVER["REMOTE_ADDR"]){
