@@ -42,7 +42,12 @@
 								</form>
 							</div>
 						</div>
-						Don't have an account? No problem, <a href="../">create one now</a>, it's free and easy!
+						<p>
+							Feeling insecure? Use <a href="https://<?php print($_SERVER["SERVER_NAME"].$_SERVER["REQUEST_URI"]) ?>">HTTPS</a>!
+						</p>
+						<p>
+							Don't have an account? No problem, <a href="../">create one now</a>, it's free and easy!
+						</p>
 					</div>
 				</body>
 			</html>
