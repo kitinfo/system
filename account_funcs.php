@@ -188,8 +188,8 @@
 	
 	function revoke_association($uid, $assoc_id){
 		global $db;
-		$update_assoc=$db->prepare("DELETE FROM associations WHERE association_id = :assoc_id AND association_account = :aid");
-		return $update_assoc->execute(array(":uid"=>$uid, ":aid"=>$assoc_id));
+		$update_assoc=$db->prepare("DELETE FROM associations WHERE association_id = :assoc_id AND association_account = :uid");
+		return $update_assoc->execute(array(":uid"=>$uid, ":assoc_id"=>$assoc_id));
 	}
 	
 	function delete_remote($uid, $remote){
