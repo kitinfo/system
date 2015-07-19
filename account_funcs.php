@@ -186,10 +186,10 @@
 		return $insert_attribute->execute(array(":uid"=>$uid, ":attrib"=>$attribute, ":value"=>htmlentities($value)));
 	}
 	
-	function revoke_association($uid, $service_id){
+	function revoke_association($uid, $assoc_id){
 		global $db;
-		$update_assoc=$db->prepare("DELETE FROM associations WHERE association_remote = :service AND association_account = :uid");
-		return $update_assoc->execute(array(":uid"=>$uid, ":service"=>$service_id));
+		$update_assoc=$db->prepare("DELETE FROM associations WHERE association_id = :assoc_id AND association_account = :aid");
+		return $update_assoc->execute(array(":uid"=>$uid, ":aid"=>$assoc_id));
 	}
 	
 	function delete_remote($uid, $remote){
